@@ -1,6 +1,6 @@
 # Allegro quiz
 
-A quiz app using .NET 5, ASP.NET, Websocket, RabbitMQ, MassTransit and React Native.
+A quiz app made using .NET 5, ASP.NET, Websocket, RabbitMQ, MassTransit and React Native.
 
 ### Current state
 
