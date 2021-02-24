@@ -20,7 +20,9 @@ namespace Web.Socket.Consumers
 
         public async Task Consume(ConsumeContext<GameEndedEvent> context)
         {
-            await _gateway.Clients.All.SendAsync("GameEnded", context.Message);
+            await _gateway.Clients
+                .Groups(context.Message.Game.Id.ToString()) // Gets all users in the room
+                .SendAsync("GameEnded", context.Message.Game); // 
         }
     }
 }

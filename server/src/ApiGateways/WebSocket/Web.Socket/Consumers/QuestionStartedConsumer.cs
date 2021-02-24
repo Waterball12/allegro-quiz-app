@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Quizzer.Domain.Events;
+using System.Threading.Tasks;
 using Web.Socket.Hubs;
 
 namespace Web.Socket.Consumers
@@ -20,7 +17,9 @@ namespace Web.Socket.Consumers
 
         public async Task Consume(ConsumeContext<QuestionStartedEvent> context)
         {
-            await _gateway.Clients.All.SendAsync("QuestionReceived", context.Message);
+            await _gateway.Clients
+                .Groups(context.Message.GameId.ToString()) // Gets all users in the room
+                .SendAsync("QuestionReceived", context.Message); // Notify all user in the group that a new question started
         }
     }
 }
