@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapi-deployment
+spec:
+  selector:
+    matchLabels:
+      app: webapi
+  template:
+    metadata:
+      labels:
+        app: webapi
+    spec:
+      containers:
+      - name: webapi
+        image: waterball/allegro-webapi:latest
+        resources:
+        ports:
+        - containerPort: 31597
+        env:
+        - name: "QuizGrpcApi"
+          value: "http://quizzer:31924"
+        - name: "ASPNETCORE_URLS"
+          value: "http://0.0.0.0:31597;"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapi-service
+spec:
+  type: NodePort
+  selector:
+    app: webapi
+  ports:
+  - name: http
+    protocol: TCP
+    port: 31597
+    targetPort: 31597
+  - name: https
+    protocol: TCP
+    port: 31598
+    targetPort: 31598

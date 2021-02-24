@@ -1,0 +1,39 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: quizzer
+spec:
+  ports:           
+   - name: http    
+     protocol: TCP 
+     port: 31924
+     targetPort: 31924
+  selector:
+    app: quizzer
+    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quizzer-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quizzer
+  template:
+    metadata:
+      labels:
+        app: quizzer
+    spec:
+      containers:
+      - name: quizzer
+        image: waterball/allegro-quizzer:latest
+        ports:
+        - containerPort: 31924
+        env:
+        - name: "ASPNETCORE_URLS"
+          value: "http://0.0.0.0:31924;"
+        - name: "RabbitMQConnection"
+          value: "rabbitmq://rabbitmq"
+
