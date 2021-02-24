@@ -7,16 +7,18 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["Services/Quiz/Quiz.API/Quiz.API.csproj", "Services/Quiz/Quiz.API/"]
-RUN dotnet restore "Services/Quiz/Quiz.API/Quiz.API.csproj"
+COPY ["Services/Quizer/Quiz.API/Quizzer.API.csproj", "Services/Quizer/Quiz.API/"]
+COPY ["Services/Quizer/Quiz.Infrastructure/Quizzer.Infrastructure.csproj", "Services/Quizer/Quiz.Infrastructure/"]
+COPY ["Services/Quizer/Quiz.Domain/Quizzer.Domain.csproj", "Services/Quizer/Quiz.Domain/"]
+RUN dotnet restore "Services/Quizer/Quiz.API/Quizzer.API.csproj"
 COPY . .
-WORKDIR "/src/Services/Quiz/Quiz.API"
-RUN dotnet build "Quiz.API.csproj" -c Release -o /app/build
+WORKDIR "/src/Services/Quizer/Quiz.API"
+RUN dotnet build "Quizzer.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Quiz.API.csproj" -c Release -o /app/publish
+RUN dotnet publish "Quizzer.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Quiz.API.dll"]
+ENTRYPOINT ["dotnet", "Quizzer.API.dll"]

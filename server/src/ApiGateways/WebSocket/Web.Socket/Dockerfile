@@ -7,10 +7,11 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["ApiGateways/Web.Socket/Web.Socket.csproj", "ApiGateways/Web.Socket/"]
-RUN dotnet restore "ApiGateways/Web.Socket/Web.Socket.csproj"
+COPY ["ApiGateways/WebSocket/Web.Socket/Web.Socket.csproj", "ApiGateways/WebSocket/Web.Socket/"]
+COPY ["Services/Quizer/Quiz.Domain/Quizzer.Domain.csproj", "Services/Quizer/Quiz.Domain/"]
+RUN dotnet restore "ApiGateways/WebSocket/Web.Socket/Web.Socket.csproj"
 COPY . .
-WORKDIR "/src/ApiGateways/Web.Socket"
+WORKDIR "/src/ApiGateways/WebSocket/Web.Socket"
 RUN dotnet build "Web.Socket.csproj" -c Release -o /app/build
 
 FROM build AS publish

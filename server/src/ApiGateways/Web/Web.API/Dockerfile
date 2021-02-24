@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["ApiGateways/Web.API/Web.API.csproj", "ApiGateways/Web.API/"]
-RUN dotnet restore "ApiGateways/Web.API/Web.API.csproj"
+COPY ["ApiGateways/Web/Web.API/Web.API.csproj", "ApiGateways/Web/Web.API/"]
+RUN dotnet restore "ApiGateways/Web/Web.API/Web.API.csproj"
 COPY . .
-WORKDIR "/src/ApiGateways/Web.API"
+WORKDIR "/src/ApiGateways/Web/Web.API"
 RUN dotnet build "Web.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
