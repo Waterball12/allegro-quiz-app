@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Quizzer.Domain.Entities;
 
 namespace Quizzer.Domain.Events
 {
+    /// <summary>
+    /// Event fired once the game ended
+    /// </summary>
     public class GameEndedEvent
     {
-        public ulong GameId { get; init; }
+        public QuizGame Game { get; init; }
     }
 }

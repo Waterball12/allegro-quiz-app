@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quizzer.Domain.Exceptions
 {
+    /// <summary>
+    /// Exception thrown when the game was not found
+    /// </summary>
     public class GameNotFoundException : Exception
     {
         public GameNotFoundException(ulong id) : base($"Game {id} not found")
