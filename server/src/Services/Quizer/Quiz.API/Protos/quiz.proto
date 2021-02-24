@@ -7,13 +7,24 @@ package quiz;
 // The quizer service definition.
 service Quizer {
   rpc CreateGame (QuizCreateRequest) returns (QuizCreatedResponse);
-  rpc QuizExist(QuizExistRequest) returns (QuizExistResponse);
+  rpc GetQuiz(GetQuizRequest) returns (QuizCreatedResponse);
   rpc StartGame(QuizStartRequest) returns (google.protobuf.Empty);
   rpc JoinGame(JoinGameRequest) returns (google.protobuf.Empty);
   rpc NextQuestion(NextQuestionRequest) returns (google.protobuf.Empty);
+  rpc SubmitAnswer(SubmitAnswerRequest) returns (google.protobuf.Empty);
+}
+
+message SubmitAnswerRequest {
+	string answer = 1;
+	string userId = 2;
+	uint64 id = 3;
 }
 
 message NextQuestionRequest {
+	uint64 id = 1;
+}
+
+message GetQuizRequest {
 	uint64 id = 1;
 }
 
@@ -44,6 +55,8 @@ message QuizCreateRequest {
 message QuizCreatedResponse {
   uint64 id = 1;
   QuizData quiz = 2;
+  repeated string users = 3;
+  bool isOwner = 4;
 }
 
 message QuizData {
