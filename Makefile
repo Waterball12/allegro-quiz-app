@@ -22,4 +22,4 @@ docker-push-quizzer:
 	docker push waterball/allegro-quizzer:latest
 
 build-frontend-web:
-	cd ./frontend && yarn && yarn run build:web
+	cd ./frontend && yarn install && yarn run build:web
