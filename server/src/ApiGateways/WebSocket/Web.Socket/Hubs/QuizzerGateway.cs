@@ -25,15 +25,27 @@ namespace Web.Socket.Hubs
             if (!ulong.TryParse(queryRoomId, out ulong roomId))
                 throw new ArgumentException("Room Id should be ulong type");
 
-            var exist = await _service.QuizExist(roomId);
+            var game = await _service.QuizExist(roomId); // TODO maybe changing it to simple Get request
 
-            if (exist == null)
+            if (game == null)
             {
                 await Clients.Caller.SendAsync("Error", "Room does not exist");
                 Context.Abort();
+                return;
             }
 
-            await _service.JoinGame(roomId, Context.User?.Identity?.Name ?? Context.ConnectionId);
+            // Temporary way to understand if its the owner
+            if (game.Users.Count <= 0)
+                game.IsOwner = true;
+
+            // Reply with connected
+            await Clients.Caller.SendAsync("Connected", game);
+            await Clients.Caller.SendAsync("Ready", Context.ConnectionId);
+            
+            // Add user to the group
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
+            // Add user to the game
+            await _service.JoinGame(roomId, Context.ConnectionId);
 
             await base.OnConnectedAsync();
         }
@@ -49,11 +61,11 @@ namespace Web.Socket.Hubs
         {
             await _service.NextQuestion(id);
         }
-
-        public Task SendMessage(string user, string message)
+        
+        [HubMethodName("SubmitAnswer")]
+        public async Task SubmitAnswer(ulong id, string answer)
         {
-            return Clients.All.SendAsync("ReceivedMessage", user, message);
+            await _service.SubmitAnswer(id, Context.ConnectionId, answer);
         }
-
     }
 }

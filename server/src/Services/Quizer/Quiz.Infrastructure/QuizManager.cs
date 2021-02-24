@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
 using Quizzer.Domain.Entities;
+using Quizzer.Domain.Enums;
 using Quizzer.Domain.Events;
 using Quizzer.Domain.Exceptions;
 
@@ -20,13 +21,17 @@ namespace Quizzer.Infrastructure
 
         private readonly ConcurrentDictionary<ulong, QuizGame> _runningGame = new ();
 
-        private readonly ConcurrentDictionary<ulong, Quiz> _runningQuiz = new();
-
         //public bool Add(string game) => _runningGame.Add(userId);
         //public bool Remove(ulong userId) => _runningGame.TryRemove(userId);
         public void Clear() => _runningGame.Clear();
 
-        public QuizGame TryGetQuiz(ulong id)
+        /// <summary>
+        /// Tries to get the quiz based on the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="GameNotFoundException">Thrown when the game is not found</exception>
+        public QuizGame TryGetQuiz(ulong id) // TODO find a better name since Try indicate it should not throw an exception
         {
             if (!_runningGame.TryGetValue(id, out QuizGame game))
             {
@@ -41,11 +46,21 @@ namespace Quizzer.Infrastructure
         /// </summary>
         /// <param name="id"></param>
         /// <param name="user"></param>
-        public void JoinGame(ulong id, string user)
+        public async Task JoinGame(ulong id, string user)
         {
             var game = TryGetQuiz(id);
 
-            game.Quiz.Users.Add(user);
+            game.Users.Add(new Player()
+            {
+                Id = user,
+                Score = 0
+            });
+
+            await _bus.Publish(new UserJoinedGameEvent()
+            {
+                UserId = user,
+                GameId = id
+            });
         }
 
         /// <summary>
@@ -69,58 +84,89 @@ namespace Quizzer.Infrastructure
         public QuizGame EndGame(ulong id)
         {
             return TryGetQuiz(id);
+
+            // TODO end the game
         }
 
+        /// <summary>
+        /// Starts a quiz game based on the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception">Thrown when the game is in a state different than IDLE</exception>
         public async Task Start(ulong id)
         {
             var game = TryGetQuiz(id);
 
-            _runningQuiz.TryAdd(id, game.Quiz);
+            if (game.Status != GameStatus.Idle)
+                throw new Exception("Expected game to be idle but was in a different state"); // TODO add a custom exception
+
+            game.Status = GameStatus.Running;
 
             var gameStartedEvent = new GameStartedEvent()
             {
                 GameId = id,
-                Users = game.Quiz.Users
+                Users = game.Users.Select(x => x.Id).ToList(),
+                Status = game.Status,
+                CurrentQuestion = game.CurrentQuestion
             };
 
             await _bus.Publish(gameStartedEvent);
 
+            // TODO find a better solution
             await Task.Delay(500);
 
             await StartQuestion(id, game.CurrentQuestion);
         }
 
-        public async Task<Question> StartQuestion(ulong quizId, int index)
+        /// <summary>
+        /// Start the given question in the specified game id
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public async Task<Question> StartQuestion(ulong gameId, int index)
         {
-            var quiz = TryGetQuiz(quizId);
+            var game = TryGetQuiz(gameId);
 
-            if (quiz.Quiz.Questions.Count <= index)
+            if (game.Quiz.Questions.Count <= index)
             {
-                await _bus.Publish(new GameEndedEvent() {GameId = quizId});
+                // End the game and remove it from running games
+                game.Status = GameStatus.Ended;
+                await _bus.Publish(new GameEndedEvent() {Game = game});
+                _runningGame.TryRemove(game.Id, out _);
                 return null;
             }
 
-            var question = quiz.Quiz.Questions[index];
+            // TODO what if its out of index?
+            var question = game.Quiz.Questions[index];
 
-            if (question == null) return null; // Throw exception 
+            if (question == null) return null; 
 
-            quiz.CurrentQuestion = quiz.CurrentQuestion += 1;
+            // TODO check if this is really necessary
+            game.CurrentQuestion = game.CurrentQuestion += 1;
 
             var questionStartedEvent = new QuestionStartedEvent()
             {
                 Question = question.Title,
-                Answers = question.Answer.Select(x => x.Description).ToList()
+                Answers = question.Answer.Select(x => x.Description).ToList(),
+                GameId = gameId,
+                CurrentQuestion = game.CurrentQuestion,
+                EndAt = DateTimeOffset.UtcNow.AddSeconds(16) // TODO use the question timeout instead
             };
 
             await _bus.Publish(questionStartedEvent);
 
+            // TODO add a scheduler
             _ = Task.Run(async () =>
             {
+                // TODO respect timeout from the question entity
                 await Task.Delay(TimeSpan.FromSeconds(15));
 
                 await _bus.Publish(new QuestionEndedEvent()
                 {
-                    CorrectAnswer = question.Answer.Where(x => x.IsCorrect).Select(x => x.Description).ToList()
+                    Answers = question.Answer,
+                    GameId = gameId
                 });
             });
 

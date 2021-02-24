@@ -20,34 +20,64 @@ namespace Quizzer.API.Services
             _manager = manager;
         }
 
-        public override Task<Empty> JoinGame(JoinGameRequest request, ServerCallContext context)
+        public override async Task<Empty> JoinGame(JoinGameRequest request, ServerCallContext context)
         {
-            _manager.JoinGame(request.Id, request.User);
+            await _manager.JoinGame(request.Id, request.User).ConfigureAwait(false);
 
-            return Task.FromResult(new Empty());
+            return new Empty();
         }
 
-        public override Task<QuizExistResponse> QuizExist(QuizExistRequest request, ServerCallContext context)
+        public override Task<QuizCreatedResponse> GetQuiz(GetQuizRequest request, ServerCallContext context)
         {
             try
             {
-                var quiz = _manager.TryGetQuiz(request.Id);
+                var game = _manager.TryGetQuiz(request.Id);
 
-                return Task.FromResult(new QuizExistResponse()
+                return Task.FromResult(new QuizCreatedResponse()
                 {
+                    Id = game.Id,
                     Quiz = new QuizData()
                     {
-                        Description = quiz.Quiz.Description,
-                        ImageUrl = quiz.Quiz.ImageUrl,
-                        Title = quiz.Quiz.Title
-                    }
+                        Title = game.Quiz.Title,
+                        Description = game.Quiz.Description,
+                        ImageUrl = game.Quiz.ImageUrl,
+                        Questions = { } // TODO finish mapping this model
+                    },
+                    Users = { game.Users.Select(x => x.Id)}
                 });
             }
             catch (GameNotFoundException)
             {
                 context.Status = new Status(StatusCode.NotFound, "Quiz does not exist");
 
-                return Task.FromResult(new QuizExistResponse());
+                return Task.FromResult(new QuizCreatedResponse());
+            }
+        }
+
+        public override Task<Empty> SubmitAnswer(SubmitAnswerRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var game = _manager.TryGetQuiz(request.Id);
+
+                var questions = game.Quiz.Questions[game.CurrentQuestion - 1];
+
+                var answer = questions?.Answer.FirstOrDefault(x => x.Description == request.Answer);
+
+                if (answer != null && answer.IsCorrect)
+                {
+                    var player = game.Users.FirstOrDefault(x => x.Id == request.UserId);
+
+                    if (player != null) player.Score += new Random().Next(5, 20); // XD
+                }
+
+                return Task.FromResult(new Empty());
+            }
+            catch (GameNotFoundException)
+            {
+                context.Status = new Status(StatusCode.NotFound, "Quiz does not exist");
+
+                return Task.FromResult(new Empty());
             }
         }
 
@@ -58,7 +88,6 @@ namespace Quizzer.API.Services
                 Title = request.Quiz.Title,
                 Description = request.Quiz.Description,
                 ImageUrl = request.Quiz.ImageUrl,
-                Users = new List<string>(),
                 Questions = request.Quiz.Questions.Select(x => new Question()
                 {
                     Timeout = x.Timeout,
@@ -79,7 +108,8 @@ namespace Quizzer.API.Services
             {
                 Quiz = quiz,
                 Id = id,
-                Started = DateTime.UtcNow
+                Started = DateTime.UtcNow,
+                Users = new List<Player>()
             };
 
             var result = _manager.CreateNew(game);

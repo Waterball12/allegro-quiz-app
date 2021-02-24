@@ -17,13 +17,13 @@ namespace Web.Socket.Services
             _config = config;
         }
 
-        public Task<QuizExistResponse> QuizExist(ulong id)
+        public Task<QuizCreatedResponse> QuizExist(ulong id)
         {
             return GrpcCallerService.CallService(_config.GetValue<string>("QuizGrpcApi"), async channel =>
             {
                 var client = new Quizer.QuizerClient(channel);
 
-                return await client.QuizExistAsync(new QuizExistRequest()
+                return await client.GetQuizAsync(new GetQuizRequest()
                 {
                     Id = id
                 });
@@ -53,6 +53,20 @@ namespace Web.Socket.Services
                 {
                     Id = id,
                     User = user
+                });
+            });
+        }
+        public Task SubmitAnswer(ulong id, string user, string answer)
+        {
+            return GrpcCallerService.CallService(_config.GetValue<string>("QuizGrpcApi"), async channel =>
+            {
+                var client = new Quizer.QuizerClient(channel);
+
+                return await client.SubmitAnswerAsync(new SubmitAnswerRequest()
+                {
+                    Answer = answer,
+                    UserId = user,
+                    Id = id
                 });
             });
         }
