@@ -1,39 +1,80 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Minimalistic from "../layouts/Minimalistic";
 import {View} from "react-native";
 import {Card, Text} from "react-native-elements";
 import RemainingTime from "./RemainingTime";
-import {SocketQuestion} from "../types/Quiz";
 import {Button, Surface, Title} from "react-native-paper";
+import {SocketGame, SocketQuestion} from "../types/socket";
+import dayjs from "dayjs";
 
 export interface QuestionPanelProps {
-    roomId: number;
-    questions: Array<SocketQuestion>;
-    showRemaining: boolean;
-    onEndRemaining: () => void;
-    connectedUsers: Array<any>;
+    game: SocketGame;
     onNextQuestion: () => void;
-    questionEnded: boolean;
-    correctAnswer: Array<string>;
+    correctAnswer: Array<SocketQuestion> | undefined;
+    onSubmit: (answer: string) => void;
 }
 
-const QuestionPanel = ({roomId, questions, connectedUsers, onEndRemaining, showRemaining, onNextQuestion, questionEnded, correctAnswer}: QuestionPanelProps) => {
-    const lastQuestion =  questions[questions.length - 1];
+const QuestionPanel = (props: QuestionPanelProps) => {
+    const {
+        onNextQuestion,
+        game,
+        correctAnswer,
+        onSubmit
+    } = props;
+
+    const [question, setQuestion] = useState<SocketQuestion | null>(null);
+    const [disabled, setDisabled] = useState(false);
+    const [remainingTime, setRemainingTime] = useState<number | null>(null);
+    const [showRemaining, setRemaining] = useState(false);
+    const [userAnswer, setUserAnswer] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        const question = game.questions[game.currentQuestion - 1];
+
+        if (question) {
+            setQuestion(question);
+            setDisabled(false);
+            setUserAnswer(undefined);
+            const remainingTime = dayjs(question.endAt).subtract(Date.now());
+            setRemainingTime(remainingTime.second() - 1);
+            setRemaining(true);
+        }
+
+    }, [game.questions[game.currentQuestion - 1]])
+
+    const handleEndRemaining = () => {
+        setDisabled(true);
+        setRemaining(false);
+    }
+
+    const answerQuestion = (answer: string) => {
+        setUserAnswer(answer);
+        onSubmit(answer);
+    }
+
     return (
         <Minimalistic>
             <View style={{flex: 1, alignContent: 'center', justifyContent: 'center'}}>
-                <Title style={{textAlign: 'center'}}>Game started {roomId}</Title>
+                <Title style={{textAlign: 'center'}}>Game started {game?.id}</Title>
                 <Card>
-                    <Card.Title>Question {questions.length}</Card.Title>
+                    <Card.Title>Question {game?.questions.length}</Card.Title>
                     <Card.Divider/>
                     <Text>
-                        {questions.length <= 0 ? "Loading..." : lastQuestion.question}
+                        {question ?  question.title : "Loading..."}
                     </Text>
                 </Card>
                 <Card>
-                    {lastQuestion?.answers.map((answer, key) => (
-                        <Surface style={{padding: '16px', marginTop: '16px', backgroundColor: (questionEnded ? (correctAnswer.some(y => y === answer) ? '#d1ffd2' : '#808080') : 'inherit') }} key={key} >
-                            <Button icon={(questionEnded ? (correctAnswer.some(y => y === answer) ? 'check' : 'close') : undefined)} onPress={() => console.log('Pressed')} disabled={questionEnded}>
+                    {question?.answer.map((answer, key) => (
+                        <Surface
+                            style={{padding: '16px', marginTop: '16px',
+                                backgroundColor: (correctAnswer ? (correctAnswer[key]?.isCorrect ? "#d1ffd2" : "#808080") :
+                                    (userAnswer === answer ? "#c8c8c8" : undefined))}}
+                            key={key} >
+                            <Button
+                                icon={(correctAnswer ? (correctAnswer[key]?.isCorrect ? "check" : "close") : undefined)}
+                                onPress={() => answerQuestion(answer)}
+                                disabled={disabled || (userAnswer !== undefined)}
+                            >
                                 {answer}
                             </Button>
                         </Surface>
@@ -41,19 +82,13 @@ const QuestionPanel = ({roomId, questions, connectedUsers, onEndRemaining, showR
                 </Card>
                 {showRemaining ? (
                     <Text h4 style={{textAlign: 'center', color: 'red'}}>
-                        <RemainingTime ms={15} onEnd={onEndRemaining} />
+                        <RemainingTime ms={remainingTime ?? 15} onEnd={handleEndRemaining} />
                     </Text>
-                ) : <Button style={{marginTop: '16px'}}  onPress={onNextQuestion}>
-                    Next question
-                </Button>}
-                {/*<Text style={{marginTop: '30px', textAlign: 'center'}}>*/}
-                {/*    Connected users: {connectedUsers.length}*/}
-                {/*</Text>*/}
-                {/*{connectedUsers.map((x, key) => (*/}
-                {/*    <Text key={key} style={{paddingTop: '5px'}}>*/}
-                {/*        {x}*/}
-                {/*    </Text>*/}
-                {/*))}*/}
+                ) : (game.isOwner ? (
+                    <Button style={{marginTop: '16px'}}  onPress={onNextQuestion}>
+                        Next question
+                    </Button>
+                ) : null) }
             </View>
         </Minimalistic>
     );

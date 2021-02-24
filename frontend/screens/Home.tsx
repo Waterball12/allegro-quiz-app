@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Button, Header, Input, Text} from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
+import {Button, Input, Text} from 'react-native-elements';
+import {useNavigation} from '@react-navigation/native';
 import axios from "axios";
 import {Quiz} from "../types/Quiz";
 import {View} from "react-native";
