@@ -16,12 +16,12 @@ spec:
         image: waterball/allegro-websocket:latest
         resources:
         ports:
-        - containerPort: 31274
+        - containerPort: 80
         env:
         - name: "QuizGrpcApi"
           value: "http://quizzer:31924"
         - name: "ASPNETCORE_URLS"
-          value: "http://0.0.0.0:31274;"
+          value: "http://0.0.0.0:80;"
         - name: "RabbitMQConnection"
           value: "rabbitmq://rabbitmq"
 ---
@@ -30,15 +30,11 @@ kind: Service
 metadata:
   name: websocket-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: websocket
   ports:
   - name: http
     protocol: TCP
-    port: 31274
-    targetPort: 31274
-  - name: https
-    protocol: TCP
-    port: 31275
-    targetPort: 31275
+    port: 80
+    targetPort: 80
