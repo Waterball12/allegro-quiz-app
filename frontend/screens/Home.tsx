@@ -11,7 +11,7 @@ const Home = () => {
     const navigation = useNavigation();
 
     const handleClick = () => {
-        axios.get<Quiz>('http://45.55.107.39/test')
+        axios.get<Quiz>('https://45.55.107.39/test')
             .then((response) => {
                 navigation.navigate('Quizzer', {
                     roomId: response.data.id
