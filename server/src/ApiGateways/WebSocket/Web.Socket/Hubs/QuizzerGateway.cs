@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Grpc.Core;
 using Microsoft.AspNetCore.SignalR;
-using Web.Socket.Services;
+using Quiz.API;
+using System;
+using System.Threading.Tasks;
 
 namespace Web.Socket.Hubs
 {
     public class QuizzerGateway : Hub
     {
-        private readonly QuizService _service;
+        private readonly Quizer.QuizerClient _quizzer;
 
-        public QuizzerGateway(QuizService service)
+        public QuizzerGateway(Quizer.QuizerClient quizzer)
         {
-            _service = service;
+            _quizzer = quizzer;
         }
 
         public override async Task OnConnectedAsync()
@@ -25,7 +24,10 @@ namespace Web.Socket.Hubs
             if (!ulong.TryParse(queryRoomId, out ulong roomId))
                 throw new ArgumentException("Room Id should be ulong type");
 
-            var game = await _service.QuizExist(roomId); // TODO maybe changing it to simple Get request
+            var game = await _quizzer.GetQuizAsync(new GetQuizRequest()
+            {
+                Id = roomId
+            });
 
             if (game == null)
             {
@@ -41,11 +43,15 @@ namespace Web.Socket.Hubs
             // Reply with connected
             await Clients.Caller.SendAsync("Connected", game);
             await Clients.Caller.SendAsync("Ready", Context.ConnectionId);
-            
+
             // Add user to the group
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
             // Add user to the game
-            await _service.JoinGame(roomId, Context.ConnectionId);
+            await _quizzer.JoinGameAsync(new JoinGameRequest()
+            {
+                Id = roomId,
+                User = Context.ConnectionId
+            });
 
             await base.OnConnectedAsync();
         }
@@ -53,19 +59,30 @@ namespace Web.Socket.Hubs
         [HubMethodName("StartGame")]
         public async Task StartGame(ulong id)
         {
-            await _service.StartQuiz(id);
+            await _quizzer.StartGameAsync(new QuizStartRequest()
+            {
+                Id = id
+            });
         }
 
         [HubMethodName("NextQuestion")]
         public async Task NextQuestion(ulong id)
         {
-            await _service.NextQuestion(id);
+            await _quizzer.NextQuestionAsync(new NextQuestionRequest()
+            {
+                Id = id
+            });
         }
-        
+
         [HubMethodName("SubmitAnswer")]
         public async Task SubmitAnswer(ulong id, string answer)
         {
-            await _service.SubmitAnswer(id, Context.ConnectionId, answer);
+            await _quizzer.SubmitAnswerAsync(new SubmitAnswerRequest()
+            {
+                Answer = answer,
+                Id = id,
+                UserId = Context.ConnectionId
+            });
         }
     }
 }

@@ -1,10 +1,9 @@
-using System;
-using System.Threading.Tasks;
+using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Quiz.API;
+using System.Threading.Tasks;
 using Web.API.Controllers;
-using Web.API.Services;
 using Xunit;
 
 namespace Web.API.Tests
@@ -15,12 +14,9 @@ namespace Web.API.Tests
         public async Task CreateQuiz_Returns_BadRequest()
         {
             // Arrange
-            var quizzer = new Mock<IQuizService>();
+            var quizzer = new Mock<Quizer.QuizerClient>();
 
-            quizzer.Setup(svc => svc.CreateNewQuiz(new QuizCreateRequest()
-            {
-                Title = "test"
-            }));
+            quizzer.Setup(svc => svc.CreateGameAsync(new QuizCreateRequest() { Title = "" }, new CallOptions()));
 
             var controller = new TestController(quizzer.Object);
 

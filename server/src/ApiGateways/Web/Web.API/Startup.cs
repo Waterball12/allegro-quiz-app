@@ -1,17 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Quiz.API;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Web.API.Services;
 
 namespace Web.API
 {
@@ -29,7 +23,12 @@ namespace Web.API
         {
 
             services.AddControllers();
-            services.AddHttpClient<QuizService>();
+
+            services.AddGrpcClient<Quizer.QuizerClient>(channel =>
+            {
+                channel.Address = new Uri(Configuration.GetValue<string>("QuizGrpcApi"));
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web.API", Version = "v1" });

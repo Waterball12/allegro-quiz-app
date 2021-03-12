@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Quiz.API;
-using Web.API.Services;
+using System.Threading.Tasks;
 
 namespace Web.API.Controllers
 {
@@ -12,17 +8,17 @@ namespace Web.API.Controllers
     [Route("[controller]")]
     public class TestController
     {
-        private readonly QuizService _service;
+        private readonly Quizer.QuizerClient _quizzer;
 
-        public TestController(QuizService service)
+        public TestController(Quizer.QuizerClient quizzer)
         {
-            _service = service;
+            _quizzer = quizzer;
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> Test()
         {
-            var quiz = await _service.CreateNewQuiz(new QuizCreateRequest()
+            var quiz = await _quizzer.CreateGameAsync(new QuizCreateRequest()
             {
                 Title = "test",
                 Quiz = new QuizData()
@@ -70,7 +66,7 @@ namespace Web.API.Controllers
             });
 
             if (quiz == null)
-                throw new ArgumentNullException(nameof(quiz));
+                return new BadRequestResult();
 
             return new JsonResult(quiz);
         }
