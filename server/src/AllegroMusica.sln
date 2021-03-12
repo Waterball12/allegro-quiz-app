@@ -27,6 +27,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quizzer.Domain", "Services\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quizzer.Infrastructure", "Services\Quizer\Quiz.Infrastructure\Quizzer.Infrastructure.csproj", "{B5B9F907-4F2D-40AC-8FB7-8F37440EF19E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{37EC1365-2738-4D88-B779-1BD539E222D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.API.Tests", "Web.API.Tests\Web.API.Tests.csproj", "{5CA25380-7336-4169-A47B-EFA6F88CE791}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,10 @@ Global
 		{B5B9F907-4F2D-40AC-8FB7-8F37440EF19E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5B9F907-4F2D-40AC-8FB7-8F37440EF19E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5B9F907-4F2D-40AC-8FB7-8F37440EF19E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CA25380-7336-4169-A47B-EFA6F88CE791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CA25380-7336-4169-A47B-EFA6F88CE791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CA25380-7336-4169-A47B-EFA6F88CE791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CA25380-7336-4169-A47B-EFA6F88CE791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +84,7 @@ Global
 		{745B81D2-B0A8-4BC6-9A27-AFCD7974C745} = {53C532FE-4730-4489-BC0B-6B5A89F0AC59}
 		{0AFB865F-99F7-476C-80F2-B9EC6368517B} = {53C532FE-4730-4489-BC0B-6B5A89F0AC59}
 		{B5B9F907-4F2D-40AC-8FB7-8F37440EF19E} = {53C532FE-4730-4489-BC0B-6B5A89F0AC59}
+		{5CA25380-7336-4169-A47B-EFA6F88CE791} = {37EC1365-2738-4D88-B779-1BD539E222D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05BEA798-7530-4A05-AF54-7FF44B1CD7C5}
