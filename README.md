@@ -6,6 +6,10 @@ A quiz app made using .NET 5, ASP.NET, Websocket, RabbitMQ, MassTransit and Reac
 
 The development is still in early stage and currently the app has limited functionality.
 
+### Get started
+
+...
+
 ### Design
 
 ##### Server
