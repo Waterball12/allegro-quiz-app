@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Home from "./screens/Home";
 import Quizzer from "./screens/Quizzer";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Music from "./screens/Music";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +28,10 @@ export default function App() {
                 <Tab.Screen
                     name="Quizzer"
                     component={Quizzer}
+                />
+                <Tab.Screen
+                    name="music"
+                    component={Music}
                 />
             </Tab.Navigator>
         </NavigationContainer>
