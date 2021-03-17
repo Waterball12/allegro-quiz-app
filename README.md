@@ -22,18 +22,18 @@ Currently only docker method is supported, you could also just download the repo
 
 This method require you to have Docker installed on your machine, afterwards you can run these commands
 
-```cmd
-    # RabbitMQ
-    docker run -d rabbitmq:3
+```base
+# RabbitMQ
+docker run -d rabbitmq:3
 
-    # WEB API
-    docker run -d -p 80:80 waterball/allegro-webapi:latest
+# WEB API
+docker run -d -p 80:80 waterball/allegro-webapi:latest
 
-    # Websocket
-    docker run -d -p 4000:4000 waterball/allegro-webapi:latest
+# Websocket
+docker run -d -p 4000:4000 waterball/allegro-webapi:latest
 
-    # quizzer
-    docker run -d -p 6000:6000 waterball/allegro-quizzer:latest
+# quizzer
+docker run -d -p 6000:6000 waterball/allegro-quizzer:latest
 ```
 
 ## Folder structure
