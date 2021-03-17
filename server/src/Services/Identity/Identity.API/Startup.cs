@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Identity.API
 {
@@ -27,7 +28,26 @@ namespace Identity.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddAuthentication();
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultChallengeScheme = "Google";
+                    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddGoogle("Google", options =>
+                {
+                    var clientId = Configuration.GetValue<string>("ClientId");
+                    var clientSecret = Configuration.GetValue<string>("ClientSecret");
+
+                    options.ClientId = clientId;
+                    options.ClientSecret = clientSecret;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.Audience = "https://localhost:5000";
+                    options.Authority = "https://localhost:13001";
+                });
 
             services.AddSwaggerGen(c =>
             {
@@ -50,6 +70,7 @@ namespace Identity.API
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
