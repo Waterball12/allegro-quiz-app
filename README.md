@@ -57,8 +57,17 @@ docker run -d -p 6000:6000 waterball/allegro-quizzer:latest
     │   └── Tests               # The test suite used across the server project
     └── README.md
 
-### Design
+## Design
 
 ##### Server
 
 ![Server Design](https://raw.githubusercontent.com/allegro-quiz/allegro-quiz-app/main/assets/draft-server.png)
+
+## Planned
+
+- [ ] Add envoy to route requests to respective microservices
+- [ ] Add authentication with Google log-in or other OAuth providers
+- [ ] Finish up the tests for the backend and the frontend
+- [ ] Add CI/CD with GitHub actions
+- [ ] Try out API gateway for kubernetes, probably [Istio](https://istio.io/) or [Ambassador](https://www.getambassador.io/)
+- [ ] Finish the frontend UI, this probably will be the last task
