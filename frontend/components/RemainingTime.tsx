@@ -14,11 +14,11 @@ const RemainingTime = (props: RemainingTimeProps) => {
     const [remaining, setRemaining] = useState(ms);
 
     useEffect(() => {
-       let interval = setInterval(() => {
-           setRemaining(remaining - 1);
+        let interval = setInterval(() => {
+            setRemaining(remaining - 1);
 
-           if (remaining <= 0) onEnd();
-       }, 1000);
+            if (remaining <= 0) onEnd();
+        }, 1000);
 
         return () => {
             clearInterval(interval);

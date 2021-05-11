@@ -2,16 +2,15 @@ import React, {useState} from 'react';
 import {Button, Input, Text} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import axios from "axios";
-import {Quiz} from "../types/Quiz";
+import {Quiz} from "../../types/Quiz";
 import {View} from "react-native";
-import Minimalistic from "../layouts/Minimalistic";
 
-const Home = () => {
+const PinRoom = () => {
     const [roomId, setRoomId] = useState<string>('');
     const navigation = useNavigation();
 
     const handleClick = () => {
-        axios.get<Quiz>('http://45.55.107.39/test')
+        axios.get<Quiz>('http://api.allegroquiz.tech/test')
             .then((response) => {
                 navigation.navigate('Quizzer', {
                     roomId: response.data.id
@@ -35,21 +34,19 @@ const Home = () => {
     }
 
     return (
-        <Minimalistic>
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <Button title="Start game" onPress={handleClick} />
-                <Text h4 style={{marginTop: '16px'}}>
-                    Or insert room id
-                </Text>
-                <Input
-                    style={{marginTop: '16px'}}
-                    placeholder='Room id'
-                    onChangeText={handleTextChange}
-                />
-                <Button title="Join room" onPress={handleJoinGame} />
-            </View>
-        </Minimalistic>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Button title="Start game" onPress={handleClick} />
+            <Text h4 style={{marginTop: '16px'}}>
+                Or insert room id
+            </Text>
+            <Input
+                style={{marginTop: '16px'}}
+                placeholder='Room id'
+                onChangeText={handleTextChange}
+            />
+            <Button title="Join room" onPress={handleJoinGame} />
+        </View>
     );
 };
 
-export default Home;
+export default PinRoom;

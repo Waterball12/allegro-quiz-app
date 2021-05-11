@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import Minimalistic from "../layouts/Minimalistic";
 import {View} from "react-native";
 import {Card, Text} from "react-native-elements";
 import RemainingTime from "./RemainingTime";
@@ -53,7 +52,7 @@ const QuestionPanel = (props: QuestionPanelProps) => {
     }
 
     return (
-        <Minimalistic>
+        <View style={{width: '100%', height: '100%', position: 'relative'}}>
             <View style={{flex: 1, alignContent: 'center', justifyContent: 'center'}}>
                 <Title style={{textAlign: 'center'}}>Game started {game?.id}</Title>
                 <Card>
@@ -90,7 +89,7 @@ const QuestionPanel = (props: QuestionPanelProps) => {
                     </Button>
                 ) : null) }
             </View>
-        </Minimalistic>
+        </View>
     );
 };
 

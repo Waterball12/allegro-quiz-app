@@ -1,5 +1,4 @@
 import React from 'react';
-import Minimalistic from "../layouts/Minimalistic";
 import {View} from "react-native";
 import {Button} from "react-native-elements";
 import {List, Subheading, Surface, Title} from "react-native-paper";
@@ -17,7 +16,7 @@ const StartGame = (props: StartGameProps) => {
     } = props;
 
     return (
-        <Minimalistic>
+        <View style={{width: '100%', height: '100%', position: 'relative'}}>
             <View style={{flex: 1, alignContent: 'center', justifyContent: 'center'}}>
                 <Surface style={{marginBottom: '16px'}}>
                     <Title style={{textAlign: 'center'}}>Connected to room {game.id}</Title>
@@ -37,7 +36,7 @@ const StartGame = (props: StartGameProps) => {
                 ))}
                 {game?.users?.length > 3 && <Subheading style={{textAlign: 'center'}}>{game?.users?.length - 3} more users are connected</Subheading>}
             </View>
-        </Minimalistic>
+        </View>
     );
 };
 

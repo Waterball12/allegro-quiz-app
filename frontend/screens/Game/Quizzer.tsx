@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {HttpTransportType, HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
 import {useRoute} from "@react-navigation/native";
-import Minimalistic from "../layouts/Minimalistic";
-import StartGame from "../components/StartGame";
-import QuestionPanel from "../components/QuestionPanel";
+import StartGame from "../../components/StartGame";
+import QuestionPanel from "../../components/QuestionPanel";
 import {
     GameStatus,
     SocketGame,
@@ -13,8 +12,9 @@ import {
     SocketQuestionEnded,
     SocketQuestionStarted,
     SocketUserJoinedGame
-} from "../types/socket";
-import GameEnded from "../components/GameEnded";
+} from "../../types/socket";
+import GameEnded from "../../components/GameEnded";
+import {View} from "react-native";
 
 const Quizzer = () => {
     const [loading, setLoading] = useState(false);
@@ -133,17 +133,17 @@ const Quizzer = () => {
 
     if (game?.status === GameStatus.Ended) {
         return (
-            <Minimalistic>
+            <View style={{width: '100%', height: '100%', position: 'relative'}}>
                 <GameEnded results={results} myId={myId} />
-            </Minimalistic>
+            </View>
         )
     }
 
     if (error) {
         return (
-            <Minimalistic>
+            <View style={{width: '100%', height: '100%', position: 'relative'}}>
                 <div>Encountered error...</div>
-            </Minimalistic>
+            </View>
         )
     }
 
