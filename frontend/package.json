@@ -6,7 +6,6 @@
     "ios": "expo start --ios",
     "web": "expo web --https",
     "eject": "expo eject",
-    "test": "jest --watchAll",
     "build:web": "expo build:web"
   },
   "jest": {
