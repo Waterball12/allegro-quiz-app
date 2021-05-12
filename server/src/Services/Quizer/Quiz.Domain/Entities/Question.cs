@@ -11,6 +11,7 @@ namespace Quizzer.Domain.Entities
         /// <summary>
         /// The id of the question
         /// </summary>
+        [Key]
         public ulong Id { get;set; }
 
         /// <summary>

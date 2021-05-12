@@ -1,4 +1,6 @@
-﻿namespace Quizzer.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Quizzer.Domain.Entities
 {
     /// <summary>
     /// Entity for the question answer
@@ -8,6 +10,7 @@
         /// <summary>
         /// The id of the answer
         /// </summary>
+        [Key]
         public ulong Id { get; init; }
 
         /// <summary>

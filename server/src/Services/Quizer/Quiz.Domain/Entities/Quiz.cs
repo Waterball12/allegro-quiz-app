@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Quizzer.Domain.Entities
 {
@@ -11,6 +12,7 @@ namespace Quizzer.Domain.Entities
         /// <summary>
         /// The id of the quiz
         /// </summary>
+        [Key]
         public ulong Id { get; init; }
 
         /// <summary>

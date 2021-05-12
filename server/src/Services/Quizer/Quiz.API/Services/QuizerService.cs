@@ -14,11 +14,36 @@ namespace Quizzer.API.Services
     public class QuizerService : Quiz.API.Quizer.QuizerBase
     {
         private readonly QuizManager _manager;
+        private readonly QuizContext _context;
 
-        public QuizerService(QuizManager manager)
+        public QuizerService(QuizManager manager, QuizContext context)
         {
             _manager = manager;
+            _context = context;
         }
+
+        public override async Task<Empty> CreateQuiz(CreateQuizRequest request, ServerCallContext context)
+        {
+            await _context.Quiz.AddAsync(new Domain.Entities.Quiz()
+            {
+                Title = request.Title,
+                Description = request.Description,
+                Questions = request.Questions.Select(x => new Question()
+                {
+                    Title = x.Title,
+                    Timeout = x.Timeout,
+                    Answer = x.Answers.Select(y => new Answer()
+                    {
+                        IsCorrect = y.IsCorrect
+                    }).ToList()
+                }).ToList()
+            });
+
+            await _context.SaveChangesAsync();
+
+            return new Empty();
+        }
+
 
         public override async Task<Empty> JoinGame(JoinGameRequest request, ServerCallContext context)
         {

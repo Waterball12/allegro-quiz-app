@@ -6,7 +6,13 @@ package quiz;
 
 // The quizer service definition.
 service Quizer {
+
+  // Create a new game and room where players can play
   rpc CreateGame (QuizCreateRequest) returns (QuizCreatedResponse);
+
+  // Create a new quiz in the database
+  rpc CreateQuiz(CreateQuizRequest) returns (google.protobuf.Empty);
+
   rpc GetQuiz(GetQuizRequest) returns (QuizCreatedResponse);
   rpc StartGame(QuizStartRequest) returns (google.protobuf.Empty);
   rpc JoinGame(JoinGameRequest) returns (google.protobuf.Empty);
@@ -43,6 +49,12 @@ message QuizExistResponse {
 
 message QuizExistRequest {
 	uint64 id = 1;
+}
+
+message CreateQuizRequest {
+	string title = 1;
+	string description = 2;
+	repeated QuestionData questions = 3;
 }
 
 // The request message containing the quiz specification
