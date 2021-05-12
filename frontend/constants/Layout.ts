@@ -9,5 +9,5 @@ export default {
     height,
   },
   isSmallDevice: width < 375,
-  borderRadius: "0.5rem"
+  borderRadius: 10
 };
