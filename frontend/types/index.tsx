@@ -23,6 +23,7 @@ export type TabOneParamList = {
 
 export type TabGameParamList = {
   PinRoom: undefined;
+  Quiz: undefined;
 }
 
 export type TabCreateParamList = {

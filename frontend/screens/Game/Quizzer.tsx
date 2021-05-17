@@ -30,7 +30,7 @@ const Quizzer = () => {
     useEffect(() => {
         setLoading(true);
         const connection = new HubConnectionBuilder()
-            .withUrl("http://165.227.254.227/gateway?roomId=" + roomId, {
+            .withUrl("http://localhost:4900/gateway?roomId=" + roomId, {
                 skipNegotiation: true,
                 transport: HttpTransportType.WebSockets
             })

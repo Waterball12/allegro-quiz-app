@@ -17,6 +17,7 @@ import IntermediateContent from "../screens/Music/IntermediateContent";
 import AdvancedContent from "../screens/Music/AdvancedContent";
 import PinRoom from "../screens/Game/PinRoom";
 import CreateGame from "../screens/Create/CreateGame";
+import Quizzer from "../screens/Game/Quizzer";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -103,17 +104,22 @@ function TabOneNavigator() {
 }
 
 
-const tabGameStack = createStackNavigator<TabGameParamList>();
+const TabGameStack = createStackNavigator<TabGameParamList>();
 
 function TabGameNavigator() {
     return (
-        <tabGameStack.Navigator>
-            <tabGameStack.Screen
+        <TabGameStack.Navigator>
+            <TabGameStack.Screen
                 name="PinRoom"
                 component={PinRoom}
                 options={{ headerTitle: 'Pin Room', headerTitleAlign: 'center', ...headerStyles }}
             />
-        </tabGameStack.Navigator>
+            <TabGameStack.Screen
+                name="Quiz"
+                component={Quizzer}
+                options={{ headerTitle: 'Quiz', headerTitleAlign: 'center', ...headerStyles }}
+            />
+        </TabGameStack.Navigator>
     );
 }
 

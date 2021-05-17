@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Image, Text} from 'react-native-elements';
-import {useNavigation} from '@react-navigation/native';
+import {useLinkProps, useNavigation} from '@react-navigation/native';
 import axios from "axios";
 import {Quiz} from "../../types/Quiz";
 import {View} from "react-native";
@@ -15,11 +15,9 @@ const PinRoom = () => {
     const navigation = useNavigation();
 
     const handleClick = () => {
-        axios.get<Quiz>('http://api.allegroquiz.tech/test')
+        axios.get<Quiz>('https://localhost:5001/test')
             .then((response) => {
-                navigation.navigate('Quizzer', {
-                    roomId: response.data.id
-                });
+                navigation.navigate('TabGame', {screen: 'Quiz', params: {roomId: response.data.id}});
             })
             .catch(() => {
                 console.error("Failed to send request")

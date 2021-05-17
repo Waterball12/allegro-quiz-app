@@ -22,7 +22,8 @@ export default {
           },
           TabGame: {
             screens: {
-              PinRoom: 'pinRoom'
+              PinRoom: 'pinRoom',
+              Quiz: 'quiz'
             }
           },
           TabCreate: {

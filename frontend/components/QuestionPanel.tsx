@@ -5,6 +5,8 @@ import RemainingTime from "./RemainingTime";
 import {Button, Surface, Title} from "react-native-paper";
 import {SocketGame, SocketQuestion} from "../types/socket";
 import dayjs from "dayjs";
+import Colors from "../constants/Colors";
+import Layout from "../constants/Layout";
 
 export interface QuestionPanelProps {
     game: SocketGame;
@@ -53,19 +55,25 @@ const QuestionPanel = (props: QuestionPanelProps) => {
 
     return (
         <View style={{width: '100%', height: '100%', position: 'relative'}}>
-            <View style={{flex: 1, alignContent: 'center', justifyContent: 'center'}}>
-                <Title style={{textAlign: 'center'}}>Game started {game?.id}</Title>
-                <Card>
-                    <Card.Title>Question {game?.questions.length}</Card.Title>
+            <View style={{flex: 1, backgroundColor: Colors.light.primaryLight}}>
+                <Card containerStyle={{backgroundColor: Colors.light.primaryButton, borderRadius: Layout.borderRadius}}>
+                    <Card.Title style={{color: '#fff', fontWeight: 'bold'}}>Game started </Card.Title>
                     <Card.Divider/>
-                    <Text>
+                    <Text style={{color: '#fff', fontWeight: 'bold'}}>
+                        Room id: {game?.id}
+                    </Text>
+                </Card>
+                <Card containerStyle={{backgroundColor: Colors.light.primaryButton, borderRadius: Layout.borderRadius}}>
+                    <Card.Title style={{color: '#fff', fontWeight: 'bold'}}>Question {game?.questions.length}</Card.Title>
+                    <Card.Divider/>
+                    <Text style={{color: '#fff', fontWeight: 'bold'}}>
                         {question ?  question.title : "Loading..."}
                     </Text>
                 </Card>
-                <Card>
+                <Card containerStyle={{backgroundColor: Colors.light.primaryButton, borderRadius: Layout.borderRadius}}>
                     {question?.answer.map((answer, key) => (
                         <Surface
-                            style={{padding: '16px', marginTop: '16px',
+                            style={{padding: '16px', marginTop: '16px', borderRadius: Layout.borderRadius,
                                 backgroundColor: (correctAnswer ? (correctAnswer[key]?.isCorrect ? "#d1ffd2" : "#808080") :
                                     (userAnswer === answer ? "#c8c8c8" : undefined))}}
                             key={key} >
@@ -84,7 +92,12 @@ const QuestionPanel = (props: QuestionPanelProps) => {
                         <RemainingTime ms={remainingTime ?? 15} onEnd={handleEndRemaining} />
                     </Text>
                 ) : (game.isOwner ? (
-                    <Button style={{marginTop: '16px'}}  onPress={onNextQuestion}>
+                    <Button
+                        onPress={onNextQuestion}
+                        style={{marginTop: 8, marginLeft: 16, marginRight: 16,
+                            backgroundColor: Colors.light.primary, paddingTop: 16, paddingBottom: 16, borderRadius: Layout.borderRadius}}
+                        color="#fff"
+                    >
                         Next question
                     </Button>
                 ) : null) }

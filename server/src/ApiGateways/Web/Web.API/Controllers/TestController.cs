@@ -30,35 +30,46 @@ namespace Web.API.Controllers
                     {
                         new QuestionData()
                         {
-                            Title = "What is the name of The Satbir’ first album",
+                            Title = "How many notes are there?",
                             Answers =
                             {
-                                new AnswerData() {Description = "Minun", IsCorrect = true},
-                                new AnswerData() {Description = "Ampharos", IsCorrect = true},
-                                new AnswerData() {Description = "Pupitar", IsCorrect = true},
-                                new AnswerData() {Description = "Deoxys", IsCorrect = true},
+                                new AnswerData() {Description = "5", IsCorrect = false},
+                                new AnswerData() {Description = "2", IsCorrect = false},
+                                new AnswerData() {Description = "7", IsCorrect = true},
+                                new AnswerData() {Description = "1", IsCorrect = false},
                             }
                         },
                         new QuestionData()
                         {
-                            Title = "What is the name of The Jasraj’ first album",
+                            Title = "How many Staff lines are there?",
                             Answers =
                             {
-                                new AnswerData() {Description = "Arcanine", IsCorrect = false},
-                                new AnswerData() {Description = "Tynamo", IsCorrect = false},
-                                new AnswerData() {Description = "Tapu Koko", IsCorrect = true},
-                                new AnswerData() {Description = "Mudkip", IsCorrect = false},
+                                new AnswerData() {Description = "5", IsCorrect = true},
+                                new AnswerData() {Description = "3", IsCorrect = false},
+                                new AnswerData() {Description = "6", IsCorrect = false},
+                                new AnswerData() {Description = "2", IsCorrect = false},
                             }
                         },
                         new QuestionData()
                         {
-                            Title = "Who was the best rock band?",
+                            Title = "What Time Signature is considered Simple Time?",
                             Answers =
                             {
-                                new AnswerData() {Description = "Satbir", IsCorrect = false},
-                                new AnswerData() {Description = "Jasraj", IsCorrect = false},
-                                new AnswerData() {Description = "Tom and Jerry", IsCorrect = false},
-                                new AnswerData() {Description = "Linkin Park", IsCorrect = true},
+                                new AnswerData() {Description = "6/8", IsCorrect = false},
+                                new AnswerData() {Description = "2/4", IsCorrect = true},
+                                new AnswerData() {Description = "9/8", IsCorrect = false},
+                                new AnswerData() {Description = "3/8", IsCorrect = false},
+                            }
+                        },
+                        new QuestionData()
+                        {
+                            Title = "What does a quaver note worth also referred to as?",
+                            Answers =
+                            {
+                                new AnswerData() {Description = "Eight Note", IsCorrect = true},
+                                new AnswerData() {Description = "Sixteenth Note", IsCorrect = false},
+                                new AnswerData() {Description = "Thirty second Note", IsCorrect = false},
+                                new AnswerData() {Description = "Quarter Note", IsCorrect = false},
                             }
                         }
                     }
